@@ -16,12 +16,14 @@ const getJobs = async () => {
   }
 };
 
-export async function getReactDevelopers(query) {
-  const data = await getJobs();
-  if (query && data.length) {
-    const result = data.filter(job => job.job_title.toLowerCase().includes(query.toLowerCase()));
-    if (result.length) return result;
-    return [];
+export async function getReactDevelopers(query, page) {
+  let data = await getJobs();
+  let endPage = +page * 5;
+  if (query) {
+    data = data.filter(job => job.job_title.toLowerCase().includes(query.toLowerCase()));
+  }
+  if (data.length) {
+    data = data.slice(endPage - 5, endPage);
   }
   return data;
 }
