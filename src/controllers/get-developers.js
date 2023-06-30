@@ -19,7 +19,7 @@ const getJobs = async () => {
 export async function getReactDevelopers(query, page) {
   let data = await getJobs();
   if (query) {
-    data = data.filter(job => job.job_title.toLowerCase().includes(query.toLowerCase()));
+    data = data.filter(job => job.job_title.toLowerCase().includes(query.toLowerCase()) || job.job_employment_type.toLowerCase().includes(query.toLowerCase()));
   }
   if (page) {
     const endPage = +page * 5;
