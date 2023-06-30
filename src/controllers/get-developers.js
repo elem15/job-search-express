@@ -5,29 +5,31 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const src = path.join(__dirname, '..', 'data', 'db.json');
 
-const getJobsByTitle = async () => {
+const getJobs = async () => {
   try {
     const json = await readFile(src, 'utf-8');
     const data = JSON.parse(json);
     return data;
   } catch (error) {
     console.log(error);
-    return { message: "Something went wrong" };
+    return [];
   }
 };
 
-export async function getReactDevelopers(query) {
-  const data = await getJobsByTitle();
+export async function getReactDevelopers(query, page) {
+  let data = await getJobs();
   if (query) {
-    const result = data.filter(job => job.job_title.toLowerCase().includes(query.toLowerCase()));
-    if (result.length) return result;
-    return { message: "Nothing found" };
+    data = data.filter(job => job.job_title.toLowerCase().includes(query.toLowerCase()) || job.job_employment_type.toLowerCase().includes(query.toLowerCase()));
+  }
+  if (page) {
+    const endPage = +page * 5;
+    data = data.slice(endPage - 5, endPage);
   }
   return data;
 }
 
 export async function getDevelopersById(id) {
-  const data = await getJobsByTitle();
+  const data = await getJobs();
   const result = data.find(job => job.id == id);
   if (result) return result;
   return { message: "Nothing found" };
